@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 // HTTP client implementation. See RFC 2616.
-// 
+//
 // This is the low-level Transport implementation of RoundTripper.
 // The high-level interface is in client.go.
 
@@ -399,9 +399,9 @@ func (t *Transport) getConn(cm *connectMethod) (*persistConn, error) {
 		if err != nil {
 			return nil, err
 		}
-		conn, err1 := openssl.Client(conn, t.TLSClientConfig)
+		conn, err := openssl.Client(conn, t.TLSClientConfig)
 		if err1 != nil {
-			return nil, err1
+			return nil, err
 		}
 		if err = conn.Handshake(); err != nil {
 			return nil, err
@@ -532,7 +532,7 @@ type persistConn struct {
 	broken               bool // an error has happened on this connection; marked broken so it's not reused.
 
 	host string
-	ip *net.TCPAddr
+	ip   *net.TCPAddr
 }
 
 func (pc *persistConn) isBroken() bool {
@@ -670,7 +670,7 @@ func (pc *persistConn) roundTrip(req *transportRequest) (resp *http.Response, er
 	// requested it.
 	requestedGzip := false
 	if !pc.t.DisableCompression && req.Header.Get("Accept-Encoding") == "" {
-		// Request gzip only, not deflate. Deflate is ambiguous and 
+		// Request gzip only, not deflate. Deflate is ambiguous and
 		// not as universally supported anyway.
 		// See: http://www.gzip.org/zlib/zlib_faq.html#faq38
 		requestedGzip = true
