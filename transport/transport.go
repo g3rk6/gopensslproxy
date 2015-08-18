@@ -400,7 +400,7 @@ func (t *Transport) getConn(cm *connectMethod) (*persistConn, error) {
 			return nil, err
 		}
 		conn, err := openssl.Client(conn, t.TLSClientConfig)
-		if err1 != nil {
+		if err != nil {
 			return nil, err
 		}
 		if err = conn.Handshake(); err != nil {
