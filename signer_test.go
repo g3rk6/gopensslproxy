@@ -1,7 +1,6 @@
 package gopensslproxy
 
 import (
-	"crypto/tls"
 	"crypto/x509"
 	"io/ioutil"
 	"net/http"
@@ -9,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	// "github.com/g3rk6/gopensslproxy/transport"
+	"github.com/g3rk6/gopensslproxy/transport"
 	"github.com/g3rk6/openssl"
 )
 
@@ -55,15 +54,15 @@ func TestSignerTLS(t *testing.T) {
 	certpool.AddCert(GopenSSLProxyCA.Leaf)
 
 	// Go's built-in tranport works just fine.
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{RootCAs: certpool},
-	}
+	// tr := &http.Transport{
+	// 	TLSClientConfig: &tls.Config{RootCAs: certpool},
+	// }
 
 	// OpenSSL based transport which crashes on FreeBSD
-	// tlsConfig, err := openssl.NewCtx()
-	// tr := &transport.Transport{
-	// 	TLSClientConfig: tlsConfig,
-	// }
+	tlsConfig, err := openssl.NewCtx()
+	tr := &transport.Transport{
+		TLSClientConfig: tlsConfig,
+	}
 
 	srv := &http.Server{
 		// Addr:    ":8443",
