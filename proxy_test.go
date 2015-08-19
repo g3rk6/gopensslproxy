@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"crypto/tls"
+	"fmt"
 	"image"
 	"io"
 	"io/ioutil"
@@ -74,12 +75,14 @@ func localFile(url string) string { return fs.URL + "/" + url }
 func localTls(url string) string  { return https.URL + url }
 
 func TestSimpleHttpReqWithProxy(t *testing.T) {
+
 	client, s := oneShotProxy(gopensslproxy.NewProxyHttpServer(), t)
 	defer s.Close()
 
 	if r := string(getOrFail(srv.URL+"/bobo", client, t)); r != "bobo" {
 		t.Error("proxy server does not serve constant handlers", r)
 	}
+
 	if r := string(getOrFail(srv.URL+"/bobo", client, t)); r != "bobo" {
 		t.Error("proxy server does not serve constant handlers", r)
 	}
@@ -91,7 +94,11 @@ func TestSimpleHttpReqWithProxy(t *testing.T) {
 
 func oneShotProxy(proxy *gopensslproxy.ProxyHttpServer, t *testing.T) (client *http.Client, s *httptest.Server) {
 
+	proxy.Verbose = true
+
 	s = httptest.NewServer(proxy)
+
+	fmt.Println("AAAAAAAAAAAA: ", s.URL)
 
 	proxyUrl, _ := url.Parse(s.URL)
 	tr := &http.Transport{TLSClientConfig: acceptAllCerts, Proxy: http.ProxyURL(proxyUrl)}
